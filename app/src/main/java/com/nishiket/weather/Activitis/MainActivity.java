@@ -40,9 +40,14 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class MainActivity extends AppCompatActivity {
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
@@ -132,6 +137,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+
     }
 
     // this method set evry view visibility gone
@@ -217,7 +223,10 @@ public class MainActivity extends AppCompatActivity {
                     String name= response.getJSONObject("current").getJSONObject("condition").getString("text");
                     txt.setText(name);
                     String dateAndTime= response.getJSONObject("location").getString("localtime");
-                    datTxt.setText(dateAndTime);
+                    SimpleDateFormat im=new SimpleDateFormat("yyyy-mm-dd hh:mm");
+                    SimpleDateFormat ou=new SimpleDateFormat("dd/mm/yyyy | hh:mm aa");
+                    Date d= im.parse(dateAndTime);
+                    datTxt.setText(ou.format(d));
                     String temp=response.getJSONObject("current").getString("temp_c");
                     tmpTxt.setText(temp+" °C");
                     String windDirc=response.getJSONObject("current").getString("wind_dir");
@@ -242,8 +251,9 @@ public class MainActivity extends AppCompatActivity {
 
                 } catch (JSONException e) {
                     throw new RuntimeException(e);
+                } catch (ParseException e) {
+                    throw new RuntimeException(e);
                 }
-
             }
         }, new Response.ErrorListener() {
             @Override
@@ -273,7 +283,7 @@ public class MainActivity extends AppCompatActivity {
     private void addItem(int i, int tempc, String we) {
         we = we.toLowerCase();
         String num = String.valueOf(i+1);
-        if(i<12) {
+        if(i<11) {
             if (we.contains("cloudy")) {
                 items.add(new Hourly(num + "Am", tempc, "cloudy"));
             } else if (we.contains("mist")) {
@@ -291,23 +301,64 @@ public class MainActivity extends AppCompatActivity {
             } else if (we.contains("snow") || we.contains("sonwy")) {
                 items.add(new Hourly(num + "Am", tempc, "snowy"));
             }
-        }else {
+        } else if (i==11) {
+            if (we.contains("cloudy")) {
+                items.add(new Hourly(num + "pm", tempc, "cloudy"));
+            } else if (we.contains("mist")) {
+                items.add(new Hourly(num + "pm", tempc, "windy"));
+            } else if (we.contains("cloudy sunny") || we.contains("overcast")) {
+                items.add(new Hourly(num + "pm", tempc, "cloudy_sunny"));
+            } else if (we.contains("rain")) {
+                items.add(new Hourly(num + "pm", tempc, "rainy"));
+            } else if (we.contains("sunny") || we.contains("clear")) {
+                items.add(new Hourly(num + "pm", tempc, "sunny"));
+            } else if (we.contains("wind") || we.contains("windy")) {
+                items.add(new Hourly(num + "pm", tempc, "windy"));
+            } else if (we.contains("strom")) {
+                items.add(new Hourly(num + "pm", tempc, "storm"));
+            } else if (we.contains("snow") || we.contains("sonwy")) {
+                items.add(new Hourly(num + "pm", tempc, "snowy"));
+            }
+
+        }else if (i==23) {
+            if (we.contains("cloudy")) {
+                items.add(new Hourly("12Am", tempc, "cloudy"));
+            } else if (we.contains("mist")) {
+                items.add(new Hourly("12Am", tempc, "windy"));
+            } else if (we.contains("cloudy sunny") || we.contains("overcast")) {
+                items.add(new Hourly("12Am", tempc, "cloudy_sunny"));
+            } else if (we.contains("rain")) {
+                items.add(new Hourly("12Am", tempc, "rainy"));
+            } else if (we.contains("sunny") || we.contains("clear")) {
+                items.add(new Hourly("12Am", tempc, "sunny"));
+            } else if (we.contains("wind") || we.contains("windy")) {
+                items.add(new Hourly("12Am", tempc, "windy"));
+            } else if (we.contains("strom")) {
+                items.add(new Hourly("12Am", tempc, "storm"));
+            } else if (we.contains("snow") || we.contains("sonwy")) {
+                items.add(new Hourly("12Am", tempc, "snowy"));
+            }
+
+        }
+        else {
+            int d=i-12+1;
+            String dt=String.valueOf(d);
                 if (we.contains("cloudy")) {
-                    items.add(new Hourly(num + "pm", tempc, "cloudy"));
+                    items.add(new Hourly(dt + "pm", tempc, "cloudy"));
                 } else if (we.contains("mist")) {
-                    items.add(new Hourly(num + "pm", tempc, "windy"));
+                    items.add(new Hourly(dt + "pm", tempc, "windy"));
                 } else if (we.contains("cloudy sunny") || we.contains("overcast")) {
-                    items.add(new Hourly(num + "pm", tempc, "cloudy_sunny"));
+                    items.add(new Hourly(dt + "pm", tempc, "cloudy_sunny"));
                 } else if (we.contains("rain")) {
-                    items.add(new Hourly(num + "pm", tempc, "rainy"));
+                    items.add(new Hourly(dt + "pm", tempc, "rainy"));
                 } else if (we.contains("sunny") || we.contains("clear")) {
-                    items.add(new Hourly(num + "pm", tempc, "sunny"));
+                    items.add(new Hourly(dt + "pm", tempc, "sunny"));
                 } else if (we.contains("wind") || we.contains("windy")) {
-                    items.add(new Hourly(num + "pm", tempc, "windy"));
+                    items.add(new Hourly(dt + "pm", tempc, "windy"));
                 } else if (we.contains("strom")) {
-                    items.add(new Hourly(num + "pm", tempc, "storm"));
+                    items.add(new Hourly(dt + "pm", tempc, "storm"));
                 } else if (we.contains("snow") || we.contains("sonwy")) {
-                    items.add(new Hourly(num + "pm", tempc, "snowy"));
+                    items.add(new Hourly(dt + "pm", tempc, "snowy"));
                 }
             }
     }//End of the addItem method
