@@ -223,8 +223,8 @@ public class MainActivity extends AppCompatActivity {
                     String name= response.getJSONObject("current").getJSONObject("condition").getString("text");
                     txt.setText(name);
                     String dateAndTime= response.getJSONObject("location").getString("localtime");
-                    SimpleDateFormat im=new SimpleDateFormat("yyyy-Mm-dd hh:mm");
-                    SimpleDateFormat ou=new SimpleDateFormat("dd/Mm/yyyy | hh:mm aa");
+                    SimpleDateFormat im=new SimpleDateFormat("yyyy-MM-dd hh:mm");
+                    SimpleDateFormat ou=new SimpleDateFormat("dd/MM/yyyy | hh:mm aa");
                     Date d= im.parse(dateAndTime);
                     datTxt.setText(ou.format(d));
                     String temp=response.getJSONObject("current").getString("temp_c");
